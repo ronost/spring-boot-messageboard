@@ -1,6 +1,9 @@
 # About
 This is a simple backend for a possible messageboard based on spring boot.
 
+# Maven wrapper
+**Install maven wrapper:** ```mvn -N io.takari:maven:wrapper```
+
 # Run app
 **Linux/OS X:** ```./mvnw spring-boot:run```
 
