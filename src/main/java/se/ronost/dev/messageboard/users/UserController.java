@@ -18,8 +18,8 @@ import se.ronost.dev.messageboard.MessageBoardUtil;
 public class UserController {
     private final UserRepository userRepository;
 
-	@Autowired
-	UserController(UserRepository userRepository) {
+    @Autowired
+    UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -28,8 +28,8 @@ public class UserController {
         return this.userRepository.findAll();
     }
 
-	@RequestMapping(value = "/users", method = RequestMethod.POST)
-	ResponseEntity<?> addUser(@RequestParam String userName) {
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    ResponseEntity<?> addUser(@RequestParam String userName) {
         if(!MessageBoardUtil.validUserNameFormat(userName)) {
             return ResponseEntity.badRequest().build();
         }
@@ -46,5 +46,5 @@ public class UserController {
                     .fromCurrentRequest().path("/{messageId}")
                     .buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(location).build();
-	}
+    }
 }

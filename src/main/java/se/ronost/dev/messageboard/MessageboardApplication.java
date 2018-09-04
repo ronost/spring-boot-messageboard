@@ -16,43 +16,43 @@ import se.ronost.dev.messageboard.users.UserRepository;
 @SpringBootApplication
 public class MessageboardApplication {
 
-	private static final Logger log = LoggerFactory.getLogger(MessageboardApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(MessageboardApplication.class);
 
-	public static void main(String[] args) {
-		SpringApplication.run(MessageboardApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MessageboardApplication.class, args);
+    }
 
-	@Bean
-	CommandLineRunner init(UserRepository userRepository, MessageRepository messageRepository) {
-		return (args) -> {
-			User mrPink = new User("Mr.Pink");
-			User niceGuyEddie = new User("Nice Guy Eddie");
-			userRepository.save(mrPink);
-			userRepository.save(niceGuyEddie);
+    @Bean
+    CommandLineRunner init(UserRepository userRepository, MessageRepository messageRepository) {
+        return (args) -> {
+            User mrPink = new User("Mr.Pink");
+            User niceGuyEddie = new User("Nice Guy Eddie");
+            userRepository.save(mrPink);
+            userRepository.save(niceGuyEddie);
 
-			messageRepository.save(new Message("C'mon, throw in a buck!", niceGuyEddie));
-			messageRepository.save(new Message("Uh-uh, I don't tip.", mrPink));
-			messageRepository.save(new Message("You don't tip?", niceGuyEddie));
-			messageRepository.save(new Message("Nah, I don't believe in it.", mrPink));
-			messageRepository.save(new Message("You don't believe in tipping?", niceGuyEddie));
+            messageRepository.save(new Message("C'mon, throw in a buck!", niceGuyEddie));
+            messageRepository.save(new Message("Uh-uh, I don't tip.", mrPink));
+            messageRepository.save(new Message("You don't tip?", niceGuyEddie));
+            messageRepository.save(new Message("Nah, I don't believe in it.", mrPink));
+            messageRepository.save(new Message("You don't believe in tipping?", niceGuyEddie));
 
-			// fetch all users
-			log.info("Users found with findAll():");
-			log.info("-------------------------------");
-			log.info("ID -> UserName");
-			for (User user : userRepository.findAll()) {
-				log.info(user.getId() + " -> " + user.getUsername());
-			}
-			log.info("");
+            // fetch all users
+            log.info("Users found with findAll():");
+            log.info("-------------------------------");
+            log.info("ID -> UserName");
+            for (User user : userRepository.findAll()) {
+                log.info(user.getId() + " -> " + user.getUsername());
+            }
+            log.info("");
 
-			// fetch all messages
-			log.info("Messages found with findAll():");
-			log.info("-------------------------------");
-			log.info("ID -> Created -> User.username -> Message");
-			for(Message message: messageRepository.findAll()) {
-				log.info(message.getId() + " -> " + message.getCreated().toString() + " -> " + message.getUser().getUsername() + " -> " + message.getMessage());
-			}
-			log.info("");
-		};
-	}
+            // fetch all messages
+            log.info("Messages found with findAll():");
+            log.info("-------------------------------");
+            log.info("ID -> Created -> User.username -> Message");
+            for(Message message: messageRepository.findAll()) {
+                log.info(message.getId() + " -> " + message.getCreated().toString() + " -> " + message.getUser().getUsername() + " -> " + message.getMessage());
+            }
+            log.info("");
+        };
+    }
 }

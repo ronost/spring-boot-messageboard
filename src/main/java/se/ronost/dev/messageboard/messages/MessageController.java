@@ -23,8 +23,8 @@ public class MessageController {
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
 
-	@Autowired
-	MessageController(UserRepository userRepository, MessageRepository messageRepository) {
+    @Autowired
+    MessageController(UserRepository userRepository, MessageRepository messageRepository) {
         this.userRepository = userRepository;
         this.messageRepository = messageRepository;
     }
@@ -42,8 +42,8 @@ public class MessageController {
         return userName1.equals(userName2);
     }
 
-	@RequestMapping(value = "/messages", method = RequestMethod.POST)
-	ResponseEntity<?> addMessage(@RequestHeader(value = "X-AUTH-USER-HEADER") String userName, @RequestBody Message messageInput) {
+    @RequestMapping(value = "/messages", method = RequestMethod.POST)
+    ResponseEntity<?> addMessage(@RequestHeader(value = "X-AUTH-USER-HEADER") String userName, @RequestBody Message messageInput) {
         if(!MessageBoardUtil.validUserNameFormat(userName)) {
             return ResponseEntity.badRequest().build();
         }
@@ -70,9 +70,9 @@ public class MessageController {
                     .fromCurrentRequest().path("/{messageId}")
                     .buildAndExpand(message.getId()).toUri();
         return ResponseEntity.created(location).build();
-	}
+    }
 
-	@RequestMapping(value = "/messages/{messageId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/messages/{messageId}", method = RequestMethod.PUT)
     ResponseEntity<?> editMessage(@RequestHeader(value = "X-AUTH-USER-HEADER") String userName, 
                                 @PathVariable String messageId, @RequestBody Message messageInput) {
         if(!MessageBoardUtil.validUserNameFormat(userName)) {
@@ -104,7 +104,7 @@ public class MessageController {
     }
     
     @RequestMapping(value = "/messages/{messageId}", method = RequestMethod.DELETE)
-	ResponseEntity<?> deleteMessage(@RequestHeader(value = "X-AUTH-USER-HEADER") String userName, @PathVariable String messageId) {
+    ResponseEntity<?> deleteMessage(@RequestHeader(value = "X-AUTH-USER-HEADER") String userName, @PathVariable String messageId) {
         if(!MessageBoardUtil.validUserNameFormat(userName)) {
             return ResponseEntity.badRequest().build();
         }
@@ -127,13 +127,11 @@ public class MessageController {
         else {
             return ResponseEntity.notFound().build();
         }
-	}
+    }
 
     @RequestMapping(value = "/messages/user/{userId}", method = RequestMethod.GET)
     public Collection<Message> getByUserId(@PathVariable String userId) {
         Optional<User> user = this.userRepository.findById(new Long(userId));
         return this.messageRepository.findByUser(user.get());
     }
-
-
 }
