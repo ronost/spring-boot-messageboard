@@ -29,17 +29,17 @@ public class MessageController {
         this.messageRepository = messageRepository;
     }
 
-    @RequestMapping(value = "/messages", method = RequestMethod.GET)
-    public Collection<Message> getAllMessages() {
-        return this.messageRepository.findAll();
-    }
-
     private boolean isAuthenticated(String userName) {
         return userRepository.findByUsername(userName).isPresent();
     }
 
     private boolean isAuthorized(String userName1, String userName2) {
         return userName1.equals(userName2);
+    }
+
+    @RequestMapping(value = "/messages", method = RequestMethod.GET)
+    public Collection<Message> getAllMessages() {
+        return this.messageRepository.findAll();
     }
 
     @RequestMapping(value = "/messages", method = RequestMethod.POST)

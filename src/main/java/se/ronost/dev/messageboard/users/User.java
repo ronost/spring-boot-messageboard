@@ -10,7 +10,6 @@ import se.ronost.dev.messageboard.messages.Message;
 
 @Entity
 public class User {
-
     @Id
     @GeneratedValue
     private Long id;

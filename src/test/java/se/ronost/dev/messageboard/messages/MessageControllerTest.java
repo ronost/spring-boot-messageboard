@@ -34,16 +34,12 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 @SpringBootTest(classes = MessageboardApplication.class)
 @WebAppConfiguration
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-
 public class MessageControllerTest {
-
-
     private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
             Charset.forName("utf8"));
-
     private MockMvc mockMvc;
-
+    private User mrPink, niceGuyEddie;
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     @Autowired
@@ -67,7 +63,15 @@ public class MessageControllerTest {
                 this.mappingJackson2HttpMessageConverter);
     }
 
-    private User mrPink, niceGuyEddie;
+    private Long getLatestId() {
+        return this.messageRepository.findAll(new Sort(Sort.Direction.DESC, "id")).get(0).getId();
+    }
+
+    protected String json(Object o) throws IOException {
+        MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
+        this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
+        return mockHttpOutputMessage.getBodyAsString();
+    }
 
     @Before
     public void setup() throws Exception {
@@ -90,7 +94,7 @@ public class MessageControllerTest {
 
     @Test
     public void shouldListMessages() throws Exception {
-        mockMvc.perform(get("/messages"))
+        this.mockMvc.perform(get("/messages"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
                 .andExpect(jsonPath("$", hasSize(5)))
@@ -191,27 +195,27 @@ public class MessageControllerTest {
         String messageJson = json(new Message("Message!!", this.mrPink));
         
         this.mockMvc.perform(post("/messages")
-        .header("X-AUTH-USER-HEADER", this.mrPink.getUsername())
-        .contentType(contentType)
-        .content(messageJson))
-        .andExpect(status().isCreated())
-        .andReturn();
+                .header("X-AUTH-USER-HEADER", this.mrPink.getUsername())
+                .contentType(contentType)
+                .content(messageJson))
+                .andExpect(status().isCreated())
+                .andReturn();
         
         Long latestId = this.getLatestId();
 
         this.mockMvc.perform(put("/messages/" + latestId.toString())
-        .header("X-AUTH-USER-HEADER", this.niceGuyEddie.getUsername())
-        .contentType(contentType)
-        .content(messageJson))
-        .andExpect(status().isForbidden())
-        .andReturn();
+                .header("X-AUTH-USER-HEADER", this.niceGuyEddie.getUsername())
+                .contentType(contentType)
+                .content(messageJson))
+                .andExpect(status().isForbidden())
+                .andReturn();
 
         this.mockMvc.perform(put("/messages/" + latestId.toString())
-        .header("X-AUTH-USER-HEADER", "Some random dude")
-        .contentType(contentType)
-        .content(messageJson))
-        .andExpect(status().isUnauthorized())
-        .andReturn();
+                .header("X-AUTH-USER-HEADER", "Some random dude")
+                .contentType(contentType)
+                .content(messageJson))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
     }
 
     @Test
@@ -309,15 +313,5 @@ public class MessageControllerTest {
         this.mockMvc.perform(delete("/messages/" + latestId.toString())
                 .contentType(contentType))
                 .andExpect(status().isBadRequest());
-    }
-
-    protected String json(Object o) throws IOException {
-        MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
-        this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
-        return mockHttpOutputMessage.getBodyAsString();
-    }
-
-    private Long getLatestId() {
-        return this.messageRepository.findAll(new Sort(Sort.Direction.DESC, "id")).get(0).getId();
     }
 }
